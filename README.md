@@ -82,7 +82,7 @@ Ktor Client ---> Fetch API
 
 | Detail Artikel | Pull to Refresh Indicator |
 | :---: | :---: |
-| <img src="ss/ss2.png" | <img src="ss/ss3.png"> |
+| <img src="ss/ss2.png"> | <img src="ss/ss3.png"> |
 
 -----
 
