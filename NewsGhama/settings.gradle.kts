@@ -1,4 +1,4 @@
-rootProject.name = "NotesGhama"
+rootProject.name = "NewsGhama"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
