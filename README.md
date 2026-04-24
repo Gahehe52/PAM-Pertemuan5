@@ -1,93 +1,80 @@
-# NewsGhama - Tugas Praktikum PAM Minggu 6
+# NotesGhama - Local Data Storage & Offline-First Architecture
 
+Repositori ini berisi implementasi Tugas Praktikum Minggu 7 untuk mata kuliah Pengembangan Aplikasi Mobile (PAM) di Institut Teknologi Sumatera (ITERA). Aplikasi ini adalah aplikasi pencatatan (Notes App) lintas platform (KMP & CMP) yang menerapkan arsitektur *Offline-First* menggunakan **SQLDelight** dan **DataStore**.
+
+**Identitas Mahasiswa:**
 - **Nama:** Muhammad Ghama Al Fajri
 - **NIM:** 123140182
-- **Mata Kuliah:** Pengembangan Aplikasi Mobile (PAM) - ITERA
 
-Aplikasi **NewsGhama** adalah aplikasi pembaca berita (*News Reader*) yang dibangun menggunakan **Compose Multiplatform**. Proyek ini merupakan implementasi dari Tugas Praktikum Minggu 6 yang berfokus pada Networking (REST API), pengelolaan UI State, dan arsitektur *Repository Pattern*.
+## 🚀 Fitur yang Diimplementasikan
+Aplikasi ini telah memenuhi seluruh kriteria rubrik penilaian dan mengimplementasikan fitur bonus:
 
----
-
-## ✨ Fitur & Pemenuhan Kriteria Tugas
-
-Aplikasi ini telah memenuhi seluruh spesifikasi tugas (termasuk Bonus 10%):
-- [x] **API Integration:** Mengambil data berita dunia nyata menggunakan **Ktor Client** (dari public API `Saurav.tech/NewsAPI`).
-- [x] **Data Parsing:** Melakukan parsing JSON secara otomatis menggunakan `Kotlinx Serialization`.
-- [x] **UI States:** Penanganan interaktif untuk state *Loading* (Spinner), *Success* (List Berita), dan *Error* (Pesan & Tombol Retry).
-- [x] **Pull to Refresh:** Fitur usap ke bawah (*swipe down*) pada list untuk memuat ulang data berita terbaru menggunakan `PullToRefreshBox`.
-- [x] **Detail Screen:** Navigasi ke layar detail saat artikel diklik, menampilkan gambar resolusi tinggi menggunakan **Kamel Image**, judul, dan konten.
-- [x] **Architecture:** Menerapkan *Repository Pattern* untuk memisahkan logika pemanggilan API dari UI (*Clean Architecture*).
-- [x] **BONUS (+10%): Offline Caching:** Data berita yang berhasil diambil akan disimpan ke *Local Storage* menggunakan `Multiplatform Settings`. Jika aplikasi dijalankan saat *Offline* (tanpa internet), aplikasi akan memuat dan menampilkan data terakhir dari *cache*.
+- [x] **SQLDelight Database**: Penyimpanan data lokal (*Offline-first*).
+- [x] **CRUD Operations**: Fungsionalitas Create, Read, Update, dan Delete catatan berjalan 100%.
+- [x] **Search Functionality**: Pencarian berdasarkan judul dan isi catatan secara *real-time*.
+- [x] **DataStore Settings**: Menyimpan preferensi pengguna (*Dark Mode* dan Pengurutan *Ascending/Descending*).
+- [x] **UI/UX & States**: Manajemen *state* UI yang proper (`Loading`, `Empty`, `Content`, `Error`).
+- [x] **🌟 Bonus (+10%) - Remote Sync Simulation**: Sinkronisasi *background* menggunakan Ktor dan Coroutines Flow.
 
 ---
 
-## 📁 Struktur Folder
+## 🗄️ Database Schema (SQLDelight)
 
-Proyek ini menggunakan struktur *Modular* yang memisahkan komponen berdasarkan fungsionalitasnya:
-```text
-com.example.notesghama/
-├── model/
-│   └── NewsModel.kt        # Data Class & Kotlinx Serializable
-├── repository/
-│   └── NewsRepository.kt   # Logika pemanggilan Ktor API & Offline Caching
-├── viewmodel/
-│   └── NewsViewModel.kt    # State holder (Loading, Success, Error)
-├── screens/
-│   └── NewsScreens.kt      # UI List Berita (Card) dan Detail Layar
-└── App.kt                  # Entry point & Setup NavHost
-````
+Aplikasi ini menggunakan SQLDelight dengan skema tabel `NoteEntity` sebagai berikut:
 
------
-
-## 🗺️ Navigation & Data Flow Diagram
-
-Berikut adalah alur navigasi dan aliran data (*Data Flow*) dari aplikasi NewsGhama:
-
-```text
-=========================================================
-            ALUR NAVIGASI & DATA APLIKASI
-=========================================================
-
-[ App.kt (NavHost) ]
-   │
-   └──> [ NewsListScreen ] (Mendengarkan State dari ViewModel)
-          │
-          ├── State: LOADING ---> Tampilkan CircularProgressIndicator
-          │
-          ├── State: ERROR -----> Tampilkan Pesan Error & Tombol "Coba Lagi"
-          │
-          └── State: SUCCESS ---> Tampilkan LazyColumn (Daftar Berita)
-                                    │
-                                    ├── Pull-to-Refresh ---> Panggil API Ulang
-                                    │
-                                    └── Klik Artikel Card -> Navigasi ke [ NewsDetailScreen ]
-                                                               │
-                                                               └── Tekan Tombol Back ---> *popBackStack*
-
----------------------------------------------------------
-[ Repository Pattern & Offline Cache Flow ]
-
-Ktor Client ---> Fetch API
-                   ├─ Berhasil -> Simpan ke Settings (Cache) -> Tampil di UI
-                   └─ Gagal/Offline -> Ambil dari Settings (Cache) -> Tampil di UI
+```sql
+CREATE TABLE NoteEntity (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    isFavorite INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
 ```
 
------
+**Penjelasan Kolom:**
+- `id`: *Primary Key* dengan *Auto-Increment*.
+- `title` & `content`: Menyimpan judul dan isi catatan.
+- `isFavorite`: Penanda (0 atau 1) untuk fitur catatan favorit.
+- `created_at` & `updated_at`: Waktu pembuatan dan pembaruan (*epoch milliseconds*) untuk manajemen *sorting* dan *sync*.
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+- **Kotlin Multiplatform (KMP)** & **Compose Multiplatform (CMP)**
+- **SQLDelight** (Local Database)
+- **Multiplatform Settings** (DataStore Coroutines)
+- **Ktor Client** (Simulasi Remote API)
+- **Kotlinx Coroutines & Flow** (Asynchronous & Reactive Data)
+- **Kotlinx Datetime** (Manajemen Waktu)
+
+---
 
 ## 📸 Screenshots
 
-| Loading State | Success State (List Berita) |
+| Halaman Awal (Sudah ditambahkan note) | Halaman Favorit |
 | :---: | :---: |
-| <img src="ss/ss4.png"> | <img src="ss/ss1.png"> |
+| <img src="ss/ss1.png"> | <img src="ss/ss2.png"> |
 
-| Detail Artikel | Pull to Refresh Indicator |
+| Halaman Profile | Search Notes |
 | :---: | :---: |
-| <img src="ss/ss2.png"> | <img src="ss/ss3.png"> |
+| <img src="ss/ss3.png"> | <img src="ss/ss4.png"> |
 
------
+| NavBar Drawer | Halaman Settings |
+| :---: | :---: |
+| <img src="ss/ss5.png"> | <img src="ss/ss6.png"> |
 
-## 🎥 Video Demo (30 Detik)
+| Halaman Utama (Dark Mode) | Offline Mode |
+| :---: | :---: |
+| <img src="ss/ss7.png"> | <img src="ss/ss8.png"> |
 
-Berikut adalah demonstrasi aplikasi yang menunjukkan proses pemuatan data (Loading), keberhasilan memuat List Berita, Navigasi ke Detail, Error State (saat internet dimatikan), dan fitur *Pull to Refresh*:
+| Tambahkan Note | Edit/Hapus Note |
+| :---: | :---: |
+| <img src="ss/ss9.png"> | <img src="ss/ss10.png"> |
 
-👉 **[Tonton Video Demo di Sini](https://drive.google.com/file/d/1g_ql4FYtS-YSF5x25UkLiMK0Z2iuh5-W/view?usp=sharing)**
+---
+
+## 🎥 Video Demo
+
+👉 **[Tonton Video Demo Aplikasi di Sini](https://drive.google.com/file/d/1s6NuvxctYmzkf5c_qF0tyQsRuklP0pN2/view?usp=sharing)** 👈
