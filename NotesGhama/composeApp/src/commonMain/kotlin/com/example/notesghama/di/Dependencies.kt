@@ -1,5 +1,6 @@
 package com.example.notesghama.di
 
+import com.example.notesghama.db.DatabaseDriverFactory // <-- Ini import yang tertinggal
 import com.example.notesghama.db.NotesDatabase
 import com.example.notesghama.repository.NoteRemoteDataSource
 import com.example.notesghama.repository.NoteRepository
