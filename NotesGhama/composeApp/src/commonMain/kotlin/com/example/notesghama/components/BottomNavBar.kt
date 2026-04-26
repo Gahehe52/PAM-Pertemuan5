@@ -1,14 +1,18 @@
 package com.example.notesghama.components
 
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.example.notesghama.navigation.BottomNavItem
+import com.example.notesghama.navigation.Screen
 
 @Composable
-fun BottomNavBar(navController: NavController, currentRoute: String?) {
+fun BottomNavBar(navController: NavController, currentRoute: String) {
     val items = listOf(
-        BottomNavItem.Notes,
+        BottomNavItem.Home,
         BottomNavItem.Favorites,
         BottomNavItem.Profile
     )
@@ -16,15 +20,19 @@ fun BottomNavBar(navController: NavController, currentRoute: String?) {
     NavigationBar {
         items.forEach { item ->
             NavigationBarItem(
-                icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
+                icon = { Icon(item.icon, contentDescription = item.label) },
                 label = { Text(item.label) },
                 selected = currentRoute == item.route,
                 onClick = {
-                    navController.navigate(item.route) {
-                        // Menggunakan route string langsung lebih aman di KMP terbaru
-                        popUpTo(BottomNavItem.Notes.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
+                    if (currentRoute != item.route) {
+                        navController.navigate(item.route) {
+                            // saveState HARUS berada di dalam popUpTo
+                            popUpTo(Screen.NoteList.route) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 }
             )

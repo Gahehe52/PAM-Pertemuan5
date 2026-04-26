@@ -7,12 +7,16 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.example.notesghama.di.Dependencies
 import com.example.notesghama.navigation.AppNavigation
+import com.example.notesghama.settings.SettingsManager
+import org.koin.compose.koinInject
 
 @Composable
 fun App() {
-    val theme by Dependencies.settingsManager.themeFlow.collectAsState(initial = "system")
+    // Inject SettingsManager via Koin
+    val settingsManager = koinInject<SettingsManager>()
+    val theme by settingsManager.themeFlow.collectAsState(initial = "system")
+
     val isDark = when(theme) {
         "dark" -> true
         "light" -> false

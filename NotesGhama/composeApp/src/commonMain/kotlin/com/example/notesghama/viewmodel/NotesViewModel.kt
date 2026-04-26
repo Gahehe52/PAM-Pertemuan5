@@ -3,9 +3,9 @@ package com.example.notesghama.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notesghama.db.NoteEntity
-import com.example.notesghama.di.Dependencies
 import com.example.notesghama.repository.NoteRepository
 import com.example.notesghama.settings.SettingsManager
+import com.example.notesghama.NetworkMonitor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,9 +18,13 @@ sealed class NotesUiState {
 }
 
 class NotesViewModel(
-    private val repository: NoteRepository = Dependencies.repository,
-    private val settingsManager: SettingsManager = Dependencies.settingsManager
+    private val repository: NoteRepository,
+    private val settingsManager: SettingsManager,
+    networkMonitor: NetworkMonitor
 ) : ViewModel() {
+
+    // Status Jaringan (Network Indicator)
+    val isNetworkConnected: StateFlow<Boolean> = networkMonitor.isConnected
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()

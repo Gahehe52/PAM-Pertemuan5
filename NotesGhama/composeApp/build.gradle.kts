@@ -12,7 +12,6 @@ plugins {
 
 kotlin {
     androidTarget {
-        // Ini adalah blok yang diperbaiki agar tidak error
         compilations.all {
             kotlinOptions {
                 jvmTarget = "21"
@@ -37,9 +36,9 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.sqldelight.android)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
-            // Library Bawaan Standar
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -48,19 +47,17 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            // --- TAMBAHAN WAJIB TUGAS 5 & PROFIL ---
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
             implementation("org.jetbrains.compose.material:material-icons-extended:1.7.0")
             implementation("com.russhwolf:multiplatform-settings:1.1.1")
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
-
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
             implementation(libs.multiplatform.settings.coroutines)
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.datetime)
-
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
