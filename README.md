@@ -1,68 +1,67 @@
-# NotesGhama - Platform Specific Features & Dependency Injection
+# NutriScan AI - Integrasi AI API
 
-Tugas Praktikum Minggu 8 untuk mata kuliah Pengembangan Aplikasi Mobile (PAM) - Teknik Informatika ITERA. Proyek ini fokus pada implementasi Dependency Injection menggunakan **Koin** dan akses fitur perangkat menggunakan pola **expect/actual**.
+Tugas Praktikum Pertemuan 9 untuk mata kuliah Pengembangan Aplikasi Mobile (PAM) - Teknik Informatika ITERA. Proyek ini difokuskan pada integrasi Google Gemini API dengan mengimplementasikan arsitektur bersih, penanganan jaringan, dan rekayasa *prompt* (Prompt Engineering).
 
 **Identitas Mahasiswa:**
 - **Nama:** Muhammad Ghama Al Fajri
 - **NIM:** 123140182
 
-## 🚀 Fitur Terbaru (Week 8)
-Pada pembaruan minggu ini, aplikasi telah ditingkatkan dengan:
-- [x] **Koin DI Implementation**: Seluruh dependensi (Database, Repository, Settings, ViewModel) kini di-inject melalui Koin untuk kode yang lebih bersih dan teruji.
-- [x] **Network Monitor (expect/actual)**: Indikator *real-time* di bagian atas layar yang mendeteksi jika koneksi internet terputus.
-- [x] **Device Info (expect/actual)**: Menampilkan informasi OS dan model perangkat di layar Pengaturan.
-- [x] **🌟 Bonus (+10%) Battery Info**: Menampilkan persentase baterai perangkat secara akurat di layar Pengaturan.
+---
+
+## Fitur Utama & Kriteria Penilaian
+Pada pembaruan praktikum minggu ini, aplikasi telah dibangun dengan memenuhi seluruh kriteria dan poin bonus:
+- [x] **Smart Chatbot & Food Analysis**: Integrasi AI Service Layer untuk menganalisis kalori makanan dan memberikan rekomendasi gizi menggunakan *system prompt* terstruktur.
+- [x] **Multi-turn Conversation (Bonus +5%)**: Model memiliki memori riwayat obrolan untuk menjaga konteks interaksi yang berkelanjutan dengan pengguna.
+- [x] **Image Analysis (Bonus +10%)**: Dukungan input multimodal yang memungkinkan AI membaca dan mengekstrak informasi gizi dari unggahan foto makanan.
+- [x] **Streaming Response (Bonus +5%)**: Antarmuka merender teks secara gradual untuk meminimalisasi waktu tunggu persepsi pengguna.
+- [x] **Proper Error Handling**: Implementasi Ktor Client dengan sistem *Exponential Backoff Retry* terisolasi untuk menangani *Rate Limit* (HTTP 429) dan masalah jaringan secara otomatis.
+- [x] **Responsive UI/UX**: Desain antarmuka profesional (menggunakan palet khusus #40513B dan #628141) yang dilengkapi dengan *loading states* dan indikator pengetikan.
 
 ---
 
-## 🏗️ Architecture Diagram (Koin DI Flow)
+## Arsitektur Aplikasi (Integrasi API Flow)
 
-Aplikasi menggunakan **Koin** untuk mengelola *lifecycle* objek secara terpusat:
+Aplikasi menggunakan pola arsitektur berlapis untuk memisahkan antarmuka pengguna dari logika jaringan dan konfigurasi API:
 
 ```text
-       [ Android / iOS / JVM ]
+       [ Compose Multiplatform UI ]
                  │
        ┌─────────▼─────────┐
-       │  platformModule   │ (DatabaseDriverFactory)
+       │ NutritionViewModel│ (Manajemen state, Retry Logic, Streaming UI)
        └─────────┬─────────┘
                  │
        ┌─────────▼─────────┐
-       │   sharedModule    │ (NotesDatabase, Repository, Settings)
+       │   AIRepository    │ (Penyimpanan memori obrolan & System Instruction)
        └─────────┬─────────┘
                  │
        ┌─────────▼─────────┐
-       │   NotesViewModel  │ (Injected with Repo & NetworkMonitor)
+       │   GeminiService   │ (Ktor HTTP Client & Kotlinx Serialization)
        └─────────┬─────────┘
                  │
-       ┌─────────▼─────────┐
-       │      UI Layer     │ (NoteList, Settings, etc.)
-       └───────────────────┘
+       [ Google Gemini API ]
+
 ```
 
 ---
 
-## 🛠️ Teknologi & Library
-- **Koin Multiplatform**: Dependency Injection.
-- **SQLDelight**: Local Persistent Storage.
-- **Multiplatform Settings**: DataStore/Preferences.
-- **ConnectivityManager (Android)**: Real-time network detection.
-- **BatteryManager (Android)**: Battery status access.
-- **Material 3**: UI Components & Navigation.
+## Teknologi & Library
+
+* **Google Gemini API (gemini-1.5-flash)**: Large Language Model Engine.
+* **Ktor Client**: HTTP Networking untuk melakukan panggilan API lintas platform.
+* **Kotlinx Serialization**: Parsing JSON untuk Data Transfer Object (DTO).
+* **Compose Multiplatform**: Framework UI deklaratif.
+* **Coroutines & Flow**: Manajemen status asinkron dan reaktivitas data.
 
 ---
 
-## 📸 Screenshots
+## Tangkapan Layar
 
-| Home (Online) | Network Offline Indicator |
-| :---: | :---: |
-| <img src="ss/ss_home.png"> | <img src="ss/ss_network.png"> |
-
-| Device & Battery Info | Nav Drawer (Tombol Settings) |
-| :---: | :---: |
-| <img src="ss/ss_device.png"> | <img src="ss/ss_drawer.png"> |
+| Chat Analysis (Teks) | 
+| --- | 
+| <img src="ss/ss_depan.png"> | 
 
 ---
 
-## 🎥 Video Demo
+## Keamanan Konfigurasi
 
-👉 **[Tonton Video Demo Tugas Minggu 8 di Sini](https://drive.google.com/file/d/1IWd_98b9XGauJIFsooX8pa0vgXDE1gBe/view?usp=sharing)** 👈
+Untuk menjalankan proyek ini di mesin lokal, *API Key* tidak disertakan dalam *Version Control System*. Anda harus menambahkan properti `GEMINI_API_KEY=kunci_anda` di dalam file `local.properties` pada direktori utama proyek untuk memungkinkan injeksi pada saat kompilasi.
