@@ -32,4 +32,4 @@ Menguji interaksi pengguna dengan antarmuka secara otomatis melalui instrumen An
 - `testSearchInputFunctionality`: Mensimulasikan pengetikan pada kolom pencarian dan memastikan teks yang diketik muncul dengan benar di layar.
 
 ### Video Demo
-[Tautkan URL Video Demo 45 Detik Anda Di Sini]
+[[Klik di sini](https://drive.google.com/file/d/1v0wHMIuaiyb7DZoveNdLTkH-j-klnfbP/view?usp=sharing)]
