@@ -1,67 +1,35 @@
-# NutriScan AI - Integrasi AI API
+## TUGAS PRAKTIKUM MINGGU 10: Testing dan Dependency Injection
+Nama   : Muhammad Ghama Al Fajri
+NIM    : 123140182
+PAM    : RA
+Informasi lengkap kode ada di branch week-8 (week-10 fokus pada testing)
 
-Tugas Praktikum Pertemuan 9 untuk mata kuliah Pengembangan Aplikasi Mobile (PAM) - Teknik Informatika ITERA. Proyek ini difokuskan pada integrasi Google Gemini API dengan mengimplementasikan arsitektur bersih, penanganan jaringan, dan rekayasa *prompt* (Prompt Engineering).
+### Test Coverage Report
+<img src="ss/ss_test1.png">
 
-**Identitas Mahasiswa:**
-- **Nama:** Muhammad Ghama Al Fajri
-- **NIM:** 123140182
+<img src="ss/ss_test2.png">
 
----
+#### 1. Unit Test: NoteRepository (5 Test Cases)
+Menguji operasi logika database dan remote data source secara terisolasi.
+- `testInsertNote`: Memastikan fungsi insert memanggil query database dan remote source dengan benar.
+- `testUpdateNote`: Memastikan fungsi update menyimpan data baru ke database dan memicu update remote.
+- `testDeleteNote`: Memastikan fungsi delete menghapus data berdasarkan ID di database dan remote.
+- `testToggleFavorite`: Memastikan status favorit pada catatan dapat diubah.
+- `testGetNoteById`: Memastikan pengambilan data tunggal (Read) mengembalikan entitas yang tepat sesuai ID.
 
-## Fitur Utama & Kriteria Penilaian
-Pada pembaruan praktikum minggu ini, aplikasi telah dibangun dengan memenuhi seluruh kriteria dan poin bonus:
-- [x] **Smart Chatbot & Food Analysis**: Integrasi AI Service Layer untuk menganalisis kalori makanan dan memberikan rekomendasi gizi menggunakan *system prompt* terstruktur.
-- [x] **Multi-turn Conversation (Bonus +5%)**: Model memiliki memori riwayat obrolan untuk menjaga konteks interaksi yang berkelanjutan dengan pengguna.
-- [x] **Image Analysis (Bonus +10%)**: Dukungan input multimodal yang memungkinkan AI membaca dan mengekstrak informasi gizi dari unggahan foto makanan.
-- [x] **Streaming Response (Bonus +5%)**: Antarmuka merender teks secara gradual untuk meminimalisasi waktu tunggu persepsi pengguna.
-- [x] **Proper Error Handling**: Implementasi Ktor Client dengan sistem *Exponential Backoff Retry* terisolasi untuk menangani *Rate Limit* (HTTP 429) dan masalah jaringan secara otomatis.
-- [x] **Responsive UI/UX**: Desain antarmuka profesional (menggunakan palet khusus #40513B dan #628141) yang dilengkapi dengan *loading states* dan indikator pengetikan.
+#### 2. Unit Test: NotesViewModel (MockK & Turbine - 5 Test Cases)
+Menguji interaksi ViewModel dengan Repository serta aliran State (Flow).
+- `testUiStateEmitsLoadingThenContent`: (Turbine) Memastikan UI State memancarkan status `Loading` terlebih dahulu, lalu berubah menjadi `Content` yang berisi daftar catatan.
+- `testSearchQueryUpdatesProperly`: (Turbine) Memastikan Flow pencarian merespons perubahan input teks dengan benar.
+- `testAddNoteCallsRepository`: (MockK) Memastikan pemanggilan fungsi tambah catatan di ViewModel meneruskan data ke Repository.
+- `testDeleteNoteCallsRepository`: (MockK) Memastikan fungsi hapus di ViewModel memicu fungsi hapus di Repository dengan parameter yang sesuai.
+- `testToggleFavoriteCallsRepository`: (MockK) Memastikan fungsi toggle favorit memicu perintah yang sama di Repository.
 
----
+#### 3. UI Test: NotesScreen (Compose UI Test - 3 Test Cases)
+Menguji interaksi pengguna dengan antarmuka secara otomatis melalui instrumen Android.
+- `testEmptyStateDisplaysMessage`: Memastikan layar menampilkan pesan kosong ("Belum ada catatan...") ketika database tidak memiliki data.
+- `testAddNoteInteraction`: Mensimulasikan klik tombol FAB tambah, mengisi input judul dan konten, lalu menekan tombol simpan.
+- `testSearchInputFunctionality`: Mensimulasikan pengetikan pada kolom pencarian dan memastikan teks yang diketik muncul dengan benar di layar.
 
-## Arsitektur Aplikasi (Integrasi API Flow)
-
-Aplikasi menggunakan pola arsitektur berlapis untuk memisahkan antarmuka pengguna dari logika jaringan dan konfigurasi API:
-
-```text
-       [ Compose Multiplatform UI ]
-                 │
-       ┌─────────▼─────────┐
-       │ NutritionViewModel│ (Manajemen state, Retry Logic, Streaming UI)
-       └─────────┬─────────┘
-                 │
-       ┌─────────▼─────────┐
-       │   AIRepository    │ (Penyimpanan memori obrolan & System Instruction)
-       └─────────┬─────────┘
-                 │
-       ┌─────────▼─────────┐
-       │   GeminiService   │ (Ktor HTTP Client & Kotlinx Serialization)
-       └─────────┬─────────┘
-                 │
-       [ Google Gemini API ]
-
-```
-
----
-
-## Teknologi & Library
-
-* **Google Gemini API (gemini-1.5-flash)**: Large Language Model Engine.
-* **Ktor Client**: HTTP Networking untuk melakukan panggilan API lintas platform.
-* **Kotlinx Serialization**: Parsing JSON untuk Data Transfer Object (DTO).
-* **Compose Multiplatform**: Framework UI deklaratif.
-* **Coroutines & Flow**: Manajemen status asinkron dan reaktivitas data.
-
----
-
-## Tangkapan Layar
-
-| Chat Analysis (Teks) | 
-| --- | 
-| <img src="ss/ss_depan.png"> | 
-
----
-
-## Keamanan Konfigurasi
-
-Untuk menjalankan proyek ini di mesin lokal, *API Key* tidak disertakan dalam *Version Control System*. Anda harus menambahkan properti `GEMINI_API_KEY=kunci_anda` di dalam file `local.properties` pada direktori utama proyek untuk memungkinkan injeksi pada saat kompilasi.
+### Video Demo
+[Tautkan URL Video Demo 45 Detik Anda Di Sini]
